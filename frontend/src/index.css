@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #F6F4EE;
+  color: #0B0D0C;
+}
+
+::selection { background: #FF5A1F; color: #F6F4EE; }
+
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.hairline { border-color: rgba(11,13,12,0.12); }
+.hairline-dark { border-color: rgba(246,244,238,0.14); }
+
+.container-x {
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-x { padding-left: 3rem; padding-right: 3rem; }
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FF5A1F;
+  color: #0B0D0C;
+  font-weight: 600;
+  padding: 0.85rem 1.6rem;
+  border-radius: 9999px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.btn-primary:hover { background: #FF7A45; transform: translateY(-2px); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(11,13,12,0.25);
+  padding: 0.8rem 1.5rem;
+  border-radius: 9999px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.btn-ghost:hover { border-color: #0B0D0C; background: rgba(11,13,12,0.04); }
+
+.btn-ghost-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(246,244,238,0.28);
+  color: #F6F4EE;
+  padding: 0.8rem 1.5rem;
+  border-radius: 9999px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.btn-ghost-dark:hover { border-color: #F6F4EE; background: rgba(246,244,238,0.08); }
+
+.reveal {
+  animation: reveal 0.7s ease forwards;
+  opacity: 0;
+  transform: translateY(16px);
+}
+@keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+
+.slide-in-left {
+  animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateX(-40px);
+}
+@keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
+
+.slide-in-right {
+  animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateX(40px);
+}
+@keyframes slideInRight { to { opacity: 1; transform: translateX(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .slide-in-left, .slide-in-right { animation: none; opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-1 * var(--marquee-shift, 25%))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="marquee"] { animation: none !important; }
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid #FF5A1F;
+  outline-offset: 2px;
+}
