@@ -463,7 +463,7 @@ export const blogPosts = [
 export const quickLinks = ['Programs', 'Services', 'Mentors', 'Investors', 'Events', 'Blog'];
 
 export const footerInfo = {
-  email: 'hello@lokhainnovation.com',
-  phone: '+91 98765 43210',
+  email: 'info@lie.services',
+  phone: '+91 84650 85559',
   address: 'D.No. 76/97, L. Venkaiah Nagar, Ballari Road, Kurnool, Andhra Pradesh – 518004',
 };

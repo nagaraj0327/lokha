@@ -57,12 +57,12 @@ export default function Directors({ directors }) {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          <div className="h-64 md:h-full overflow-hidden rounded-2xl bg-ink-800">
+          <div className="w-full aspect-[3/4] md:aspect-auto md:h-full overflow-hidden rounded-2xl bg-ink-800">
             {directorImages[d.img] ? (
               <img
                 src={directorImages[d.img]}
                 alt={d.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
               />
             ) : (
               <InitialsAvatar name={d.name} />
