@@ -1,39 +1,79 @@
-import { getDb } from './db.service.js';
-import { readAll, appendRecord } from './jsonStorage.service.js';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-/**
- * Creates a record store for a given "table". Tries SQLite first (real DB,
- * safe for concurrent writes); if `node:sqlite` isn't available on this Node
- * version, transparently falls back to the flat-JSON storage. Callers never
- * need to know which one is actually in use.
- */
-export function createRepository(tableName, jsonFileName) {
+const connectionString = process.env.DATABASE_URL;
+
+const adapter = new PrismaPg({
+  connectionString,
+});
+
+const prisma = new PrismaClient({ adapter });
+
+export function createRepository(tableName) {
   return {
     async create(record) {
-      const db = await getDb();
-      const receivedAt = new Date().toISOString();
-      const withTimestamp = { ...record, receivedAt };
+      const receivedAt = new Date();
 
-      if (db) {
-        const stmt = db.prepare(
-          `INSERT INTO ${tableName} (payload, received_at) VALUES (?, ?)`
-        );
-        stmt.run(JSON.stringify(withTimestamp), receivedAt);
-        return withTimestamp;
+      const data = {
+        ...record,
+        receivedAt: receivedAt.toISOString(),
+      };
+
+      if (tableName === 'applications') {
+        const result = await prisma.application.create({
+          data: {
+            payload: data,
+            receivedAt,
+          },
+        });
+
+        return {
+          ...result.payload,
+          receivedAt: result.receivedAt.toISOString(),
+        };
       }
 
-      return appendRecord(jsonFileName, record);
+      if (tableName === 'messages') {
+        const result = await prisma.message.create({
+          data: {
+            payload: data,
+            receivedAt,
+          },
+        });
+
+        return {
+          ...result.payload,
+          receivedAt: result.receivedAt.toISOString(),
+        };
+      }
+
+      throw new Error(`Unknown repository table: ${tableName}`);
     },
 
     async findAll() {
-      const db = await getDb();
+      if (tableName === 'applications') {
+        const rows = await prisma.application.findMany({
+          orderBy: { id: 'desc' },
+        });
 
-      if (db) {
-        const rows = db.prepare(`SELECT payload FROM ${tableName} ORDER BY id DESC`).all();
-        return rows.map((row) => JSON.parse(row.payload));
+        return rows.map((row) => ({
+          ...row.payload,
+          receivedAt: row.receivedAt.toISOString(),
+        }));
       }
 
-      return readAll(jsonFileName);
+      if (tableName === 'messages') {
+        const rows = await prisma.message.findMany({
+          orderBy: { id: 'desc' },
+        });
+
+        return rows.map((row) => ({
+          ...row.payload,
+          receivedAt: row.receivedAt.toISOString(),
+        }));
+      }
+
+      throw new Error(`Unknown repository table: ${tableName}`);
     },
   };
 }
